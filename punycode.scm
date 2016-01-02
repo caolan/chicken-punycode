@@ -111,32 +111,52 @@
     #f
     str))
 
+(define (calculate-delta prev code handled #!optional (delta 0))
+  (+ delta (* (- code prev) (+ handled 1))))
+
+(define (encode-code-point str len handled bias code delta first)
+  (let loop ((handled handled)
+             (bias bias)
+             (delta delta)
+             (index 0))
+    (if (< index len)
+      (let ((n (char->integer (string-ref str index))))
+        (cond ((< n code)
+               (loop handled
+                     bias
+                     (+ delta 1)
+                     (+ index 1)))
+              ((= n code)
+               (display (encode-integer delta bias))
+               (loop (+ handled 1)
+                     (adapt delta (+ handled 1) first)
+                     0
+                     (+ index 1)))
+              (else
+                (loop handled
+                      bias
+                      delta
+                      (+ index 1)))))
+      (values handled bias delta))))
+
 (define (encode-non-ascii basic-length str)
   (with-output-to-string
     (lambda ()
-      (let ((total (string-length str))
-            (handled basic-length)
-            (start initial-code)
-            (delta 0)
-            (bias initial-bias))
-        (while (< handled total)
-          (and-let* ((code (next-code-point start str))
-                     (i 0))
-            (set! delta (+ delta (* (- code start) (+ handled 1))))
-            (string-for-each
-              (lambda (c)
-                (inc! i)
-                (cond
-                  ((< (char->integer c) code) (inc! delta))
-                  ((= (char->integer c) code)
-                   (display (encode-integer delta bias))
-                   (set! bias
-                     (adapt delta (+ handled 1) (= handled basic-length)))
-                   (set! delta 0)
-                   (inc! handled))))
-                str)
-            (set! start (+ code 1))
-            (inc! delta)))))))
+      (let ((len (string-length str)))
+        (let loop ((handled basic-length)
+                   (bias initial-bias)
+                   (code initial-code)
+                   (delta 0))
+          (when (< handled len)
+            (let* ((c (next-code-point code str))
+                   (d (calculate-delta code c handled delta))
+                   (first (= handled basic-length)))
+              (receive (handled bias d)
+                (encode-code-point str len handled bias c d first)
+                (loop handled
+                      bias
+                      (+ c 1)
+                      (+ d 1))))))))))
 
 (define (punycode-encode str)
   (let ((ascii-chars (string-filter ascii? str)))
