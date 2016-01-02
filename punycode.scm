@@ -1,4 +1,4 @@
-(module punycode *
+(module punycode (punycode-encode punycode-decode)
 
 (import chicken scheme)
 (use utf8 utf8-srfi-13 ports miscmacros)
