@@ -1,0 +1,14 @@
+;;; -*- Scheme -*-
+
+(compile -s -O2 punycode.scm -j punycode)
+(compile -s -O2 punycode.import.scm)
+(compile -c -O2 punycode.scm
+    -Iinclude -unit punycode -o punycode-static.o)
+
+(install-extension
+  'punycode
+  '("punycode.so"
+    "punycode.import.so"
+    "punycode-static.o")
+  `((version "1.0.0")
+    (static "punycode-static.o")))

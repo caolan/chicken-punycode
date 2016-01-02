@@ -1,0 +1,6 @@
+((synopsis "Represents unicode with the limited ASCII subset supported by DNS (RFC3493)")
+ (author "Caolan McMahon")
+ (category web)
+ (depends miscmacros utf8)
+ (test-depends test)
+ (license "BSD"))
