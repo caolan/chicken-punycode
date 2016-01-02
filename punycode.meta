@@ -2,5 +2,5 @@
  (author "Caolan McMahon")
  (category web)
  (depends miscmacros utf8)
- (test-depends test cluckcheck)
+ (test-depends test test-generative)
  (license "BSD"))
