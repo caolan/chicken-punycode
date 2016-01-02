@@ -24,9 +24,8 @@
     "abcdefghijklmnopqrstuvwxyz"    ;; 0 to 25, respectively
     "0123456789"))                  ;; 26 to 35, respectively
 
-(define (encode-digit d #!optional uppercase)
-  (let ((c (string-ref digits d)))
-    (if uppercase (char-upcase c) c)))
+(define encode-digit
+  (cut string-ref digits <>))
 
 (define (decode-digit d)
   (string-index digits (char-downcase d)))
@@ -40,7 +39,7 @@
         (loop (fx/ d (fx- base tmin)) (fx+ k base))
         (fx+ k (fx/ (fx* (fx+ (fx- base tmin) 1) d) (fx+ d skew)))))))
 
-(define (encode-integer n bias #!optional uppercase)
+(define (encode-integer n bias)
   (with-output-to-string
     (lambda ()
       (let loop ((q n)
@@ -49,9 +48,9 @@
                        ((>= k (fx+ bias tmax)) tmax)
                        (else (- k bias)))))
           (if (< q t)
-            (display (encode-digit q uppercase))
+            (display (encode-digit q))
             (begin
-              (display (encode-digit (+ t (modulo (- q t) (- base t))) #f))
+              (display (encode-digit (+ t (modulo (- q t) (- base t)))))
               (loop (fx/ (- q t) (- base t))
                     (+ k base)))))))))
 
@@ -118,7 +117,7 @@
                 (cond
                   ((< (char->integer c) code) (inc! delta))
                   ((= (char->integer c) code)
-                   (display (encode-integer delta bias (char-upper-case? c)))
+                   (display (encode-integer delta bias))
                    (set! bias
                      (adapt delta (+ handled 1) (= handled basic-length)))
                    (set! delta 0)
