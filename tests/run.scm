@@ -1,4 +1,4 @@
-(use test punycode)
+(use test punycode utf8 extras srfi-1 cluckcheck)
 
 (test-group "encode"
   (test "tda" (punycode-encode "ü"))
@@ -154,5 +154,19 @@
     (lambda (t)
       (test (car t) (cdr t) (punycode-decode (car t))))
     test-data))
+
+(define (gen-unicode-char)
+  (integer->char (random 93217)))
+
+(define (gen-unicode-string)
+  (list->string
+    (list-tabulate (random 50)
+                   (lambda (i) (gen-unicode-char)))))
+
+;; cluckcheck
+(for-all
+  (lambda (str)
+    (string=? str (punycode-decode (punycode-encode str))))
+  gen-unicode-string)
 
 (test-exit)
