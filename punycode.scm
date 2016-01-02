@@ -1,7 +1,19 @@
-(module punycode (punycode-encode punycode-decode)
+(module punycode
+
+;; exports
+(punycode-encode
+ punycode-decode
+ domain->ascii
+ domain->unicode)
 
 (import chicken scheme)
-(use utf8 utf8-srfi-13 ports miscmacros)
+
+(use ports
+     utf8
+     utf8-srfi-13
+     utf8-srfi-14
+     data-structures
+     miscmacros)
 
 ;; Bootstring parameters for Punycode
 (define base 36)
@@ -165,5 +177,43 @@
       (decode-non-ascii basic (decode-integers deltas (string-length basic)))
       ;; whole string non-ascii
       (decode-non-ascii "" (decode-integers basic 0)))))
+
+
+;; RFC 3490
+(define label-separators
+  (string->char-set "\x2E\u3002\uFF0E\uFF61"))
+
+(define (map-domain proc str)
+  (string-join
+    (map proc (string-tokenize str (char-set-complement label-separators)))
+    "."))
+
+(define (punycode-domain? str)
+  (string-prefix? "xn--" str))
+
+(define (unicode-domain? str)
+  (string-any (complement ascii?) str))
+
+;; Converts a domain possibly containing unicode characters to a punycode
+;; representation of the domain, ascii-only domains are untouched. This
+;; procedure is idempotent.
+(define (domain->ascii str)
+  (map-domain
+    (lambda (s)
+      (if (unicode-domain? s)
+        (string-append "xn--" (punycode-encode s))
+        s))
+    str))
+
+;; Converts a possibly punycoded domain back to it's unicode
+;; representation. Unicode strings are returned unmodified. This procedure
+;; is idempotent.
+(define (domain->unicode str)
+  (map-domain
+    (lambda (s)
+      (if (punycode-domain? s)
+        (punycode-decode (string-drop s 4))
+        s))
+    str))
 
 )

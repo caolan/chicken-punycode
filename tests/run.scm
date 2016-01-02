@@ -155,6 +155,34 @@
       (test (car t) (cdr t) (punycode-decode (car t))))
     test-data))
 
+(test-group "domain->ascii"
+  (test "xn--Bcher-kva.com"
+        (domain->ascii "Bücher.com"))
+  (test "xn--Bcher-kva.com"
+        (domain->ascii "xn--Bcher-kva.com"))
+  (test "example.xn--Bcher-kva.com"
+        (domain->ascii "example.Bücher.com"))
+  (test "example.xn--Bcher-kva.com"
+        (domain->ascii "example.xn--Bcher-kva.com"))
+  (test "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"
+        (domain->ascii "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"))
+  (test "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"
+        (domain->ascii "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j")))
+
+(test-group "domain->unicode"
+  (test "Bücher.com"
+        (domain->unicode "xn--Bcher-kva.com"))
+  (test "Bücher.com"
+        (domain->unicode "Bücher.com"))
+  (test "example.Bücher.com"
+        (domain->unicode "example.xn--Bcher-kva.com"))
+  (test "example.Bücher.com"
+        (domain->unicode "example.Bücher.com"))
+  (test "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"
+        (domain->unicode "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"))
+  (test "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"
+        (domain->unicode "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟")))
+
 (define (gen-unicode-char)
   (integer->char (random 93217)))
 
