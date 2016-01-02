@@ -32,12 +32,12 @@
 
 ;; 6.1 Bias adaptation function
 (define (adapt delta num first)
-  (let ((d0 (fx/ delta (if first damp 2))))
-    (let loop ((d (fx+ d0 (fx/ d0 num)))
+  (let ((d0 (quotient delta (if first damp 2))))
+    (let loop ((d (+ d0 (quotient d0 num)))
                (k 0))
-      (if (fx> d (fx/ (fx* (fx- base tmin) tmax) 2))
-        (loop (fx/ d (fx- base tmin)) (fx+ k base))
-        (fx+ k (fx/ (fx* (fx+ (fx- base tmin) 1) d) (fx+ d skew)))))))
+      (if (> d (quotient (* (- base tmin) tmax) 2))
+        (loop (quotient d (- base tmin)) (+ k base))
+        (+ k (quotient (* (+ (- base tmin) 1) d) (+ d skew)))))))
 
 (define (encode-integer n bias)
   (with-output-to-string
@@ -45,13 +45,13 @@
       (let loop ((q n)
                  (k base))
         (let ((t (cond ((<= k bias) tmin)
-                       ((>= k (fx+ bias tmax)) tmax)
+                       ((>= k (+ bias tmax)) tmax)
                        (else (- k bias)))))
           (if (< q t)
             (display (encode-digit q))
             (begin
               (display (encode-digit (+ t (modulo (- q t) (- base t)))))
-              (loop (fx/ (- q t) (- base t))
+              (loop (quotient (- q t) (- base t))
                     (+ k base)))))))))
 
 (define (decode-integer str bias #!optional (start 0))
@@ -144,7 +144,7 @@
       (let* ((enc (car encoded))
              (delta (car enc))
              (upper (cdr enc))
-             (code (+ code (fx/ (+ i delta) (+ out 1))))
+             (code (+ code (quotient (+ i delta) (+ out 1))))
              (i (modulo (+ i delta) (+ out 1))))
         (loop (string-insert-at result i (code->string code upper))
               code
