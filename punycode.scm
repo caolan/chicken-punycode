@@ -203,10 +203,15 @@
 (define label-separators
   (string->char-set "\x2E\u3002\uFF0E\uFF61"))
 
+(define (split-labels str #!optional (start 0))
+  (let ((i (string-index str label-separators start)))
+    (if i
+      (cons (substring str start i)
+            (split-labels str (+ i 1)))
+      (list (string-drop str start)))))
+
 (define (map-domain proc str)
-  (string-join
-    (map proc (string-tokenize str (char-set-complement label-separators)))
-    "."))
+  (string-join (map proc (split-labels str)) "."))
 
 (define (punycode-domain? str)
   (string-prefix? "xn--" str))

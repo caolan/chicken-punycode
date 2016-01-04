@@ -167,7 +167,9 @@
   (test "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"
         (domain->ascii "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"))
   (test "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"
-        (domain->ascii "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j")))
+        (domain->ascii "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"))
+  ;; stupid case, but I'd like to be explicit about behaviour here
+  (test "x...y..." (domain->ascii "x...y...")))
 
 (test-group "domain->unicode"
   (test "Bücher.com"
@@ -181,7 +183,9 @@
   (test "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"
         (domain->unicode "xn--egb1138jmaa3a6kvc0h5fqa0a5af3jpbyfd.xn--egb9058j"))
   (test "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"
-        (domain->unicode "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟")))
+        (domain->unicode "ﻞﻴﻬﻣﺎﺒﺘﻜﻠﻣﻮﺸﻋﺮﺒﻳ؟.ﻱ؟"))
+  ;; stupid case, but I'd like to be explicit about behaviour here
+  (test "x...y..." (domain->unicode "x...y...")))
 
 (define (gen-unicode-char)
   (integer->char (random 93217)))
