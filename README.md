@@ -13,11 +13,11 @@ Domain Names in Applications (IDNA)"
 (punycode-decode "Bcher-kva")
 ;; => "Bücher"
 
-(domain->ascii "www.bücher.com")
-;; => "www.xn--bcher-kva.com"
+(domain->ascii "www.bücher.de")
+;; => "www.xn--bcher-kva.de"
 
-(domain->unicode "www.xn--bcher-kva.com")
-;; => "www.bücher.com"
+(domain->unicode "www.xn--bcher-kva.de")
+;; => "www.bücher.de"
 ```
 
 This implementation does not support producing mixed-case

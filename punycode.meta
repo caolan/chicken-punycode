@@ -1,4 +1,4 @@
-((synopsis "Represents unicode with the limited ASCII subset supported by DNS (RFC3493)")
+((synopsis "Represents unicode with the limited ASCII subset supported by DNS (RFC3492)")
  (author "Caolan McMahon")
  (category web)
  (depends miscmacros utf8)
