@@ -1,0 +1,7 @@
+((synopsis "Represents unicode with the limited ASCII subset supported by DNS (RFC3492)")
+ (author "Caolan McMahon")
+ (category web)
+ (dependencies miscmacros utf8)
+ (test-dependencies test test-generative)
+ (components (extension punycode))
+ (license "BSD"))

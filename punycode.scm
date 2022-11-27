@@ -6,14 +6,12 @@
  domain->ascii
  domain->unicode)
 
-(import chicken scheme)
+(import big-chicken scheme)
 
-(use ports
-     utf8
-     utf8-srfi-13
-     utf8-srfi-14
-     data-structures
-     miscmacros)
+(import	utf8
+	utf8-srfi-13
+	utf8-srfi-14
+	miscmacros)
 
 ;; Bootstring parameters for Punycode
 (define base 36)
